@@ -1,6 +1,8 @@
-# FBGR — визуализация данных Firebird в Grafana
+# FBGR — Firebird–Grafana API
 
-Веб-приложение на Django: чтение данных из базы Firebird 2.5 и отдача в Grafana через REST API для графиков, таблиц и фильтрации.
+**Название:** FBGR (Firebird–Grafana Bridge / API).
+
+**Описание:** REST API на Django для чтения данных из базы Firebird 2.5 и отдачи их в формате JSON. Предназначен для визуализации в Grafana через источник данных Infinity: дашборды строятся по агрегатам заказов маркетплейсов (MP_ORDERS), сводкам документов (DOCSUMJOINS, DOCITEMSSUMJOINS) и данным товаров Ozon (MP_OZON_GOODS_EX). Поддерживаются фильтрация по периоду и статусу, временные ряды по дням и табличные отчёты.
 
 
 ## Требования
