@@ -1,0 +1,18 @@
+# Источники данных для Grafana (FBGR API).
+# Скопируйте каталог provisioning в Grafana (или укажите в grafana.ini: provisioning = path).
+# Установите плагин Infinity: grafana-cli plugins install yesoreyeram-infinity-datasource
+
+apiVersion: 1
+
+datasources:
+  - name: FBGR-API
+    type: yesoreyeram-infinity-datasource
+    access: proxy
+    url: http://host.docker.internal:8000
+    isDefault: true
+    editable: true
+    jsonData:
+      # Базовый URL API (Grafana будет слать запросы на url + путь из панели).
+      # Для локального запуска замените на http://localhost:8000
+      baseURL: http://host.docker.internal:8000/api
+    version: 1

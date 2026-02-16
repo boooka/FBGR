@@ -1,0 +1,61 @@
+"""
+SQL для MP_OZON_GOODS_EX (товары Ozon). Позиционные параметры ?.
+"""
+# Период по CREATE_TIME.
+
+# Общее количество записей за период
+OZON_GOODS_COUNT_SQL = """
+SELECT COUNT(*) AS cnt
+FROM MP_OZON_GOODS_EX o
+WHERE (? IS NULL OR CAST(o.CREATE_TIME AS DATE) >= ?)
+  AND (? IS NULL OR CAST(o.CREATE_TIME AS DATE) <= ?)
+"""
+
+# По флагам: архивные, со скидкой, видимость FBO/FBS
+OZON_GOODS_BY_FLAGS_SQL = """
+SELECT
+  COALESCE(o.ARCHIVED, 0) AS archived,
+  COALESCE(o.IS_DISCOUNTED, 0) AS is_discounted,
+  COALESCE(o.IS_FBO_VISIBLE, 0) AS is_fbo_visible,
+  COALESCE(o.IS_FBS_VISIBLE, 0) AS is_fbs_visible,
+  COUNT(*) AS cnt
+FROM MP_OZON_GOODS_EX o
+WHERE (? IS NULL OR CAST(o.CREATE_TIME AS DATE) >= ?)
+  AND (? IS NULL OR CAST(o.CREATE_TIME AS DATE) <= ?)
+GROUP BY o.ARCHIVED, o.IS_DISCOUNTED, o.IS_FBO_VISIBLE, o.IS_FBS_VISIBLE
+ORDER BY cnt DESC
+"""
+
+# Сводка по дням (количество записей)
+OZON_GOODS_BY_DAY_SQL = """
+SELECT CAST(o.CREATE_TIME AS DATE) AS day_date, COUNT(*) AS cnt
+FROM MP_OZON_GOODS_EX o
+WHERE (? IS NULL OR CAST(o.CREATE_TIME AS DATE) >= ?)
+  AND (? IS NULL OR CAST(o.CREATE_TIME AS DATE) <= ?)
+GROUP BY CAST(o.CREATE_TIME AS DATE)
+ORDER BY day_date
+"""
+
+# Суммы количеств FBS/FBO по дням
+OZON_GOODS_QUANT_BY_DAY_SQL = """
+SELECT
+  CAST(o.CREATE_TIME AS DATE) AS day_date,
+  SUM(COALESCE(o.QUANT_FBS, 0)) AS quant_fbs,
+  SUM(COALESCE(o.QUANT_FBO, 0)) AS quant_fbo
+FROM MP_OZON_GOODS_EX o
+WHERE (? IS NULL OR CAST(o.CREATE_TIME AS DATE) >= ?)
+  AND (? IS NULL OR CAST(o.CREATE_TIME AS DATE) <= ?)
+GROUP BY CAST(o.CREATE_TIME AS DATE)
+ORDER BY day_date
+"""
+
+# Таблица: последние записи (лимит 500)
+OZON_GOODS_LIST_SQL = """
+SELECT FIRST 500 o.GOOD_ID, o.OFFER_ID, o.SKU, o.QUANT_FBS, o.QUANT_FBO,
+       o.IS_FBO_VISIBLE, o.IS_FBS_VISIBLE, o.ARCHIVED, o.IS_DISCOUNTED,
+       o.CREATE_TIME
+FROM MP_OZON_GOODS_EX o
+WHERE (? IS NULL OR CAST(o.CREATE_TIME AS DATE) >= ?)
+  AND (? IS NULL OR CAST(o.CREATE_TIME AS DATE) <= ?)
+ORDER BY o.CREATE_TIME DESC
+"""

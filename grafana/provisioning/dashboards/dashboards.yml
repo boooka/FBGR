@@ -1,0 +1,17 @@
+# Provisioning дашбордов FBGR.
+# В grafana.ini укажите: [paths] provisioning = <каталог, где лежит этот файл>
+# В options.path укажите каталог с JSON дашбордов (например, тот же repo/grafana/dashboards).
+
+apiVersion: 1
+
+providers:
+  - name: FBGR
+    orgId: 1
+    folder: FBGR
+    folderUid: fbgr
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    options:
+      # Путь к папке с JSON (относительно рабочей директории Grafana или абсолютный).
+      path: dashboards
