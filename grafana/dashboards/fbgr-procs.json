@@ -1,0 +1,86 @@
+{
+  "annotations": {"list": []},
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {"type": "yesoreyeram-infinity-datasource", "uid": "${datasource}"},
+      "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []},
+      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
+      "id": 1,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["count"], "fields": "", "values": true}, "textMode": "auto"},
+      "targets": [{"refId": "A", "url": "procs/rpt_pays/?task_id=${task_id}", "type": "json", "source": "url", "format": "table", "root_selector": "data"}],
+      "title": "RPT_PAYS: записей",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "yesoreyeram-infinity-datasource", "uid": "${datasource}"},
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 10, "w": 24, "x": 0, "y": 4},
+      "id": 2,
+      "options": {"showHeader": true},
+      "targets": [{"refId": "A", "url": "procs/rpt_pays/?task_id=${task_id}", "type": "json", "source": "url", "format": "table", "root_selector": "data"}],
+      "title": "RPT_PAYS (платежи по задаче)",
+      "type": "table"
+    },
+    {
+      "datasource": {"type": "yesoreyeram-infinity-datasource", "uid": "${datasource}"},
+      "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []},
+      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
+      "id": 3,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["count"], "fields": "", "values": true}, "textMode": "auto"},
+      "targets": [{"refId": "A", "url": "procs/rpt_paysperiod/?task_id=${task_id}&dt_from=${__from:date:YYYY-MM-DD}&dt_to=${__to:date:YYYY-MM-DD}", "type": "json", "source": "url", "format": "table", "root_selector": "data"}],
+      "title": "RPT_PAYSPERIOD: записей",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "yesoreyeram-infinity-datasource", "uid": "${datasource}"},
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 14},
+      "id": 4,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom", "showLegend": true}},
+      "targets": [{"refId": "A", "url": "procs/rpt_paysperiod/?task_id=${task_id}&dt_from=${__from:date:YYYY-MM-DD}&dt_to=${__to:date:YYYY-MM-DD}", "type": "json", "source": "url", "format": "timeseries", "root_selector": "data", "columns": [{"selector": "dt", "text": "Дата", "type": "timestamp"}, {"selector": "docsum", "text": "Сумма"}]}],
+      "title": "RPT_PAYSPERIOD: сумма по дням (docsum)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "yesoreyeram-infinity-datasource", "uid": "${datasource}"},
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 14},
+      "id": 5,
+      "options": {"showHeader": true},
+      "targets": [{"refId": "A", "url": "procs/rpt_paysperiod/?task_id=${task_id}&dt_from=${__from:date:YYYY-MM-DD}&dt_to=${__to:date:YYYY-MM-DD}", "type": "json", "source": "url", "format": "table", "root_selector": "data"}],
+      "title": "RPT_PAYSPERIOD (платежи за период)",
+      "type": "table"
+    },
+    {
+      "datasource": {"type": "yesoreyeram-infinity-datasource", "uid": "${datasource}"},
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 22},
+      "id": 6,
+      "options": {"showHeader": true},
+      "targets": [{"refId": "A", "url": "procs/doc_pay_list/?d_id=${d_id}&smj_mode=${smj_mode}", "type": "json", "source": "url", "format": "table", "root_selector": "data"}],
+      "title": "DOC_PAY_LIST (платежи по документу)",
+      "type": "table"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "tags": ["fbgr", "procs"],
+  "templating": {
+    "list": [
+      {"current": {"selected": true, "text": "FBGR-API", "value": "FBGR-API"}, "hide": 0, "name": "datasource", "query": "yesoreyeram-infinity-datasource", "refresh": 1, "type": "datasource"},
+      {"current": {"selected": true, "text": "0", "value": "0"}, "hide": 0, "name": "task_id", "label": "TASK_ID", "query": "0", "type": "text"},
+      {"current": {"selected": true, "text": "", "value": ""}, "hide": 0, "name": "d_id", "label": "D_ID (документ)", "query": "", "type": "text"},
+      {"current": {"selected": true, "text": "0", "value": "0"}, "hide": 0, "name": "smj_mode", "label": "SMJ_MODE", "query": "0", "type": "text"}
+    ]
+  },
+  "time": {"from": "now-30d", "to": "now"},
+  "timezone": "browser",
+  "title": "FBGR — процедуры (RPT_PAYS, RPT_PAYSPERIOD, DOC_PAY_LIST)",
+  "uid": "fbgr-procs",
+  "version": 1
+}

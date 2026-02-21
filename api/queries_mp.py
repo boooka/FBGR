@@ -43,41 +43,61 @@ GROUP BY CAST(o.MP_CREATE_TIME AS DATE), o.STATUS
 ORDER BY day_date, status
 """
 
-# Сводка DOCSUMJOINS за период (по CREATE_TIME). Без SUM_N — только счётчики (избегаем UDF в доменах).
-DOCSUMJOINS_SUMMARY_SQL = """
-SELECT s.TYPE_ID AS type_id, COUNT(*) AS join_cnt
-FROM DOCSUMJOINS s
-WHERE (? IS NULL OR CAST(s.CREATE_TIME AS DATE) >= ?)
-  AND (? IS NULL OR CAST(s.CREATE_TIME AS DATE) <= ?)
-GROUP BY s.TYPE_ID
-ORDER BY type_id
+# Список заказов с подстановкой face_name, document_number (лимит 200)
+MP_ORDERS_LIST_SQL = """
+SELECT FIRST 200
+  o.MP_ID, o.DOCUMENT_ID, o.FACE_ID, o.POSTING_NUMBER, o.ORDER_NUMBER, o.STATUS,
+  o.MP_CREATE_TIME, o.MP_DT_SHIPMENT, o.ISCANCEL,
+  f.NAME AS face_name, f.SHORTNAME AS face_shortname,
+  d.NUMBER AS document_number
+FROM MP_ORDERS o
+LEFT JOIN FACES f ON o.FACE_ID = f.ID
+LEFT JOIN DOCS d ON o.DOCUMENT_ID = d.ID
+WHERE (? IS NULL OR CAST(o.MP_CREATE_TIME AS DATE) >= ?)
+  AND (? IS NULL OR CAST(o.MP_CREATE_TIME AS DATE) <= ?)
+  AND (? IS NULL OR o.STATUS = ?)
+ORDER BY o.MP_CREATE_TIME DESC
 """
 
-# По дням для DOCSUMJOINS
-DOCSUMJOINS_BY_DAY_SQL = """
-SELECT CAST(s.CREATE_TIME AS DATE) AS day_date, s.TYPE_ID AS type_id, COUNT(*) AS join_cnt
+# Сводка DOCSUMJOINS за период с type_name, type_code (DOCCLASSES).
+DOCSUMJOINS_SUMMARY_SQL = """
+SELECT s.TYPE_ID AS type_id, dc.NAME AS type_name, dc.CODE AS type_code, COUNT(*) AS join_cnt
 FROM DOCSUMJOINS s
+LEFT JOIN DOCCLASSES dc ON s.TYPE_ID = dc.ID
 WHERE (? IS NULL OR CAST(s.CREATE_TIME AS DATE) >= ?)
   AND (? IS NULL OR CAST(s.CREATE_TIME AS DATE) <= ?)
-GROUP BY CAST(s.CREATE_TIME AS DATE), s.TYPE_ID
+GROUP BY s.TYPE_ID, dc.NAME, dc.CODE
+ORDER BY join_cnt DESC
+"""
+
+# По дням для DOCSUMJOINS с type_name
+DOCSUMJOINS_BY_DAY_SQL = """
+SELECT CAST(s.CREATE_TIME AS DATE) AS day_date, s.TYPE_ID AS type_id, dc.NAME AS type_name, dc.CODE AS type_code, COUNT(*) AS join_cnt
+FROM DOCSUMJOINS s
+LEFT JOIN DOCCLASSES dc ON s.TYPE_ID = dc.ID
+WHERE (? IS NULL OR CAST(s.CREATE_TIME AS DATE) >= ?)
+  AND (? IS NULL OR CAST(s.CREATE_TIME AS DATE) <= ?)
+GROUP BY CAST(s.CREATE_TIME AS DATE), s.TYPE_ID, dc.NAME, dc.CODE
 ORDER BY day_date, type_id
 """
 
-# Сводка DOCITEMSSUMJOINS (без SUM_N — только счётчики).
+# Сводка DOCITEMSSUMJOINS с type_name, type_code (DOCCLASSES).
 DOCITEMSSUMJOINS_SUMMARY_SQL = """
-SELECT i.TYPE_ID AS type_id, COUNT(*) AS item_cnt
+SELECT i.TYPE_ID AS type_id, dc.NAME AS type_name, dc.CODE AS type_code, COUNT(*) AS item_cnt
 FROM DOCITEMSSUMJOINS i
+LEFT JOIN DOCCLASSES dc ON i.TYPE_ID = dc.ID
 WHERE (? IS NULL OR CAST(i.CREATE_TIME AS DATE) >= ?)
   AND (? IS NULL OR CAST(i.CREATE_TIME AS DATE) <= ?)
-GROUP BY i.TYPE_ID
-ORDER BY type_id
+GROUP BY i.TYPE_ID, dc.NAME, dc.CODE
+ORDER BY item_cnt DESC
 """
 
 DOCITEMSSUMJOINS_BY_DAY_SQL = """
-SELECT CAST(i.CREATE_TIME AS DATE) AS day_date, i.TYPE_ID AS type_id, COUNT(*) AS item_cnt
+SELECT CAST(i.CREATE_TIME AS DATE) AS day_date, i.TYPE_ID AS type_id, dc.NAME AS type_name, dc.CODE AS type_code, COUNT(*) AS item_cnt
 FROM DOCITEMSSUMJOINS i
+LEFT JOIN DOCCLASSES dc ON i.TYPE_ID = dc.ID
 WHERE (? IS NULL OR CAST(i.CREATE_TIME AS DATE) >= ?)
   AND (? IS NULL OR CAST(i.CREATE_TIME AS DATE) <= ?)
-GROUP BY CAST(i.CREATE_TIME AS DATE), i.TYPE_ID
+GROUP BY CAST(i.CREATE_TIME AS DATE), i.TYPE_ID, dc.NAME, dc.CODE
 ORDER BY day_date, type_id
 """

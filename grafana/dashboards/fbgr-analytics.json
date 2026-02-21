@@ -1,0 +1,95 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${datasource}" },
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "id": 1,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+      "targets": [{
+        "refId": "A",
+        "url": "analytics/revenue_by_day/?dt_from=${__from:date:YYYY-MM-DD}&dt_to=${__to:date:YYYY-MM-DD}",
+        "type": "json", "source": "url", "format": "timeseries", "root_selector": "data",
+        "columns": [
+          { "selector": "day", "text": "День", "type": "timestamp" },
+          { "selector": "revenue", "text": "Выручка" }
+        ]
+      }],
+      "title": "Выручка по дням",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${datasource}" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "id": 2,
+      "options": { "orientation": "horizontal", "showValue": "always", "displayMode": "gradient" },
+      "targets": [{
+        "refId": "A",
+        "url": "analytics/top_goods_by_quant/?dt_from=${__from:date:YYYY-MM-DD}&dt_to=${__to:date:YYYY-MM-DD}",
+        "type": "json", "source": "url", "format": "table", "root_selector": "data"
+      }],
+      "title": "Топ товаров по продажам (кол-во)",
+      "type": "table"
+    },
+    {
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${datasource}" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "id": 3,
+      "options": { "orientation": "horizontal", "showValue": "always" },
+      "targets": [{
+        "refId": "A",
+        "url": "analytics/top_goods_by_price/?dt_from=${__from:date:YYYY-MM-DD}&dt_to=${__to:date:YYYY-MM-DD}",
+        "type": "json", "source": "url", "format": "table", "root_selector": "data"
+      }],
+      "title": "Рейтинг самых дорогих товаров (средняя цена)",
+      "type": "table"
+    },
+    {
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${datasource}" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "id": 4,
+      "options": { "showHeader": true },
+      "targets": [{
+        "refId": "A",
+        "url": "analytics/heatmap_goods_by_day/?dt_from=${__from:date:YYYY-MM-DD}&dt_to=${__to:date:YYYY-MM-DD}",
+        "type": "json", "source": "url", "format": "table", "root_selector": "data"
+      }],
+      "title": "Тепловая карта: товар × день (кол-во)",
+      "type": "table"
+    },
+    {
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${datasource}" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "id": 5,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+      "targets": [{
+        "refId": "A",
+        "url": "analytics/top_goods_by_quant/?dt_from=${__from:date:YYYY-MM-DD}&dt_to=${__to:date:YYYY-MM-DD}",
+        "type": "json", "source": "url", "format": "table",
+        "root_selector": "data"
+      }],
+      "title": "Топ товаров по количеству (барчарт)",
+      "type": "bargauge"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "tags": ["fbgr", "analytics"],
+  "templating": {
+    "list": [
+      { "current": { "selected": true, "text": "FBGR-API", "value": "FBGR-API" },
+        "hide": 0, "name": "datasource", "query": "yesoreyeram-infinity-datasource", "refresh": 1, "type": "datasource" }
+    ]
+  },
+  "time": { "from": "now-30d", "to": "now" },
+  "timezone": "browser",
+  "title": "FBGR — аналитика (выручка, топ товаров, тепловая карта)",
+  "uid": "fbgr-analytics",
+  "version": 1
+}

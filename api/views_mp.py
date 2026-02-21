@@ -13,6 +13,7 @@ from .queries_mp import (
     MP_ORDERS_BY_STATUS_SQL,
     MP_ORDERS_BY_DAY_SQL,
     MP_ORDERS_STATUS_BY_DAY_SQL,
+    MP_ORDERS_LIST_SQL,
     DOCSUMJOINS_SUMMARY_SQL,
     DOCSUMJOINS_BY_DAY_SQL,
     DOCITEMSSUMJOINS_SUMMARY_SQL,
@@ -51,7 +52,7 @@ def mp_orders_count(request: Request):
     """
     dt_from = _date(request.query_params.get('dt_from'))
     dt_to = _date(request.query_params.get('dt_to'))
-    status = request.query_params.get('status', '').strip() or None
+    status = (request.query_params.get('status') or '').strip() or None
     params = _mp_period_params(dt_from, dt_to, status)
     rows = run_query(MP_ORDERS_COUNT_SQL, params)
     row = rows[0] if rows else {}
@@ -69,7 +70,7 @@ def mp_orders_count_value(request: Request):
     """
     dt_from = _date(request.query_params.get('dt_from'))
     dt_to = _date(request.query_params.get('dt_to'))
-    status = request.query_params.get('status', '').strip() or None
+    status = (request.query_params.get('status') or '').strip() or None
     params = _mp_period_params(dt_from, dt_to, status)
     rows = run_query(MP_ORDERS_COUNT_SQL, params)
     n = int(rows[0].get('cnt', 0)) if rows else 0
@@ -126,6 +127,21 @@ def mp_orders_status_by_day(request: Request):
             d['day'] = d.pop('day_date')
         data.append(d)
     return Response({'data': data})
+
+
+@api_view(['GET'])
+def mp_orders_list(request: Request):
+    """
+    Список заказов MP_ORDERS с подстановкой face_name, document_number (FACES, DOCS).
+    Параметры: dt_from, dt_to, status (опц.). Лимит 200 записей.
+    """
+    dt_from = _date(request.query_params.get('dt_from'))
+    dt_to = _date(request.query_params.get('dt_to'))
+    status = (request.query_params.get('status') or '').strip() or None
+    params = _mp_period_params(dt_from, dt_to, status)
+    rows = run_query(MP_ORDERS_LIST_SQL, params)
+    data = [serialize_row(r) for r in rows]
+    return Response({'data': data, 'count': len(data)})
 
 
 @api_view(['GET'])

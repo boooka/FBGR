@@ -1,0 +1,126 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${datasource}" },
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "id": 1,
+      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${datasource}" },
+          "refId": "A",
+          "url": "docs/count/value/?dt_from=${__from:date:YYYY-MM-DD}&dt_to=${__to:date:YYYY-MM-DD}",
+          "type": "json",
+          "source": "url",
+          "format": "table",
+          "root_selector": "data"
+        }
+      ],
+      "title": "Всего документов (DOCS)",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${datasource}" },
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 6, "y": 0 },
+      "id": 2,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+      "targets": [
+        {
+          "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${datasource}" },
+          "refId": "A",
+          "url": "docs/by_day/?dt_from=${__from:date:YYYY-MM-DD}&dt_to=${__to:date:YYYY-MM-DD}",
+          "type": "json",
+          "source": "url",
+          "format": "timeseries",
+          "root_selector": "data",
+          "columns": [
+            { "selector": "day", "text": "День", "type": "timestamp" },
+            { "selector": "cnt", "text": "Документов" }
+          ]
+        }
+      ],
+      "title": "Документы по дням",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${datasource}" },
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "id": 3,
+      "options": { "legend": { "displayMode": "list", "placement": "right", "showLegend": true } },
+      "targets": [
+        {
+          "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${datasource}" },
+          "refId": "A",
+          "url": "docs/by_state/?dt_from=${__from:date:YYYY-MM-DD}&dt_to=${__to:date:YYYY-MM-DD}",
+          "type": "json",
+          "source": "url",
+          "format": "table",
+          "root_selector": "data"
+        }
+      ],
+      "title": "Документы по состояниям (name, code)",
+      "type": "table"
+    },
+    {
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${datasource}" },
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "id": 4,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
+      "targets": [
+        {
+          "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "${datasource}" },
+          "refId": "A",
+          "url": "docs/state_by_day/?dt_from=${__from:date:YYYY-MM-DD}&dt_to=${__to:date:YYYY-MM-DD}",
+          "type": "json",
+          "source": "url",
+          "format": "timeseries",
+          "root_selector": "data",
+          "columns": [
+            { "selector": "day", "text": "День", "type": "timestamp" },
+            { "selector": "name", "text": "Состояние" },
+            { "selector": "code", "text": "Код" },
+            { "selector": "cnt", "text": "Кол-во" }
+          ]
+        }
+      ],
+      "title": "Документы по дням и состояниям",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["fbgr", "docs"],
+  "templating": {
+    "list": [
+      {
+        "current": { "selected": true, "text": "FBGR-API", "value": "FBGR-API" },
+        "hide": 0,
+        "includeAll": false,
+        "name": "datasource",
+        "options": [],
+        "query": "yesoreyeram-infinity-datasource",
+        "refresh": 1,
+        "type": "datasource"
+      }
+    ]
+  },
+  "time": { "from": "now-30d", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "FBGR — документы (DOCS)",
+  "uid": "fbgr-docs",
+  "version": 1
+}
